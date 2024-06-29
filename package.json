@@ -1,0 +1,22 @@
+{
+  "name": "txner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tf-init": "cd ./terraform && terraform init",
+    "tf-apply": "cd ./terraform && terraform apply",
+    "tf-destroy": "cd ./terraform && terraform destroy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thanover/txner.git"
+  },
+  "author": "Tom Hanover",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thanover/txner/issues"
+  },
+  "homepage": "https://github.com/thanover/txner#readme"
+}
