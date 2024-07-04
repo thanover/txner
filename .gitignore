@@ -170,3 +170,4 @@ terraform.rc
 *.zip
 
 /dev
+**/*/dist/
