@@ -1,14 +1,15 @@
-export async function handler(event: unknown) {
-  console.log('Event: ', event);
-  let responseMessage = 'Txner API is Running!';
+import { Handler } from 'aws-lambda';
 
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      message: responseMessage,
-    }),
-  }
-}
+export const handler: Handler = async (event, context) => {
+    console.log('EVENT: \n' + JSON.stringify(event, null, 2));
+    const responseMessage = 'Txner API is Running!';
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: responseMessage,
+      }),
+    }
+};

@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tf-init": "cd ./terraform && terraform init",
-    "tf-apply": "cd ./terraform && terraform apply",
-    "tf-destroy": "cd ./terraform && terraform destroy"
+    "tf-init": "cd ./deploy && terraform init",
+    "tf-plan": "cd ./deploy && terraform plan",
+    "tf-apply": "cd ./deploy && terraform apply",
+    "tf-destroy": "cd ./deploy && terraform destroy",
+    "build-lambda": "cd ./lambda && tsc",
+    "deploy": "npm run build-lambda && npm run tf-apply"
   },
   "repository": {
     "type": "git",
