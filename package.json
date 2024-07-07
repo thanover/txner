@@ -9,7 +9,7 @@
     "tf-plan": "cd ./deploy && terraform plan",
     "tf-apply": "cd ./deploy && terraform apply",
     "tf-destroy": "cd ./deploy && terraform destroy",
-    "build-lambda": "cd ./lambda && tsc",
+    "build-lambda": "rm -rf ./deploy/dist && cd ./lambda && tsc",
     "deploy": "npm run build-lambda && npm run tf-apply"
   },
   "repository": {

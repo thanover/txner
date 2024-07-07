@@ -116,12 +116,17 @@ resource "aws_cloudwatch_log_group" "txner_api_gw" {
 #   uri                     = aws_lambda_function.txner_lambda.invoke_arn
 # }
 
-resource "aws_apigatewayv2_route" "main" {
+resource "aws_apigatewayv2_route" "health_route" {
   api_id    = aws_apigatewayv2_api.txner-api.id
-  route_key = "ANY /{proxy+}"
+  route_key = "GET /health"
   target    = "integrations/${aws_apigatewayv2_integration.apigwv2_lambda_integration.id}"
 }
 
+resource "aws_apigatewayv2_route" "transaction_route" {
+  api_id    = aws_apigatewayv2_api.txner-api.id
+  route_key = "ANY /transaction"
+  target    = "integrations/${aws_apigatewayv2_integration.apigwv2_lambda_integration.id}"
+}
 
 resource "aws_apigatewayv2_integration" "apigwv2_lambda_integration" {
   api_id             = aws_apigatewayv2_api.txner-api.id
@@ -160,7 +165,7 @@ resource "aws_lambda_function" "txner_lambda" {
   s3_bucket        = aws_s3_bucket.lambda_bucket.id
   s3_key           = aws_s3_object.txner_lambda_zip_object.key
   runtime          = "nodejs20.x"
-  handler          = "main.handler"
+  handler          = "handler.handler"
   source_code_hash = data.archive_file.txner_lambda_zip.output_base64sha256
   role             = aws_iam_role.txner_lambda_exec.arn
 }
@@ -212,7 +217,7 @@ resource "aws_lambda_permission" "lambda_permission_from_apigw" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.txner_lambda.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.txner-api.execution_arn}/*/*/{proxy+}"
+  source_arn    = "${aws_apigatewayv2_api.txner-api.execution_arn}/*/*"
 
 }
 
