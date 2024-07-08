@@ -15,7 +15,7 @@
       "Action": [
         "dynamodb:PutItem"
       ],
-      "Resource": "arn:aws:dynamodb:*:*:table/PRODUCT"
+      "Resource": "arn:aws:dynamodb:*:*:table/TXNER_DEV"
     }
   ]
 }

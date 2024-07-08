@@ -18,61 +18,31 @@ terraform {
 # DynamoDB
 
 resource "aws_dynamodb_table" "txner_table" {
-  name         = "txner"
+  name         = "TXNER_DEV"
   billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "tx_id"
+  hash_key     = "PK"
+  range_key    = "SK"
   attribute {
-    name = "tx_id"
+    name = "PK"
     type = "S"
+  }
+  attribute {
+    name = "SK"
+    type = "S"
+  }
+  attribute {
+    name = "ID"
+    type = "S"
+  }
+  local_secondary_index {
+    name            = "ID_LSI"
+    projection_type = "ALL"
+    range_key       = "ID"
   }
 }
 
 # APIGW
 
-# resource "aws_api_gateway_rest_api" "txner_apigw" {
-#   name        = "txner_apigw"
-#   description = "Txner API Gateway"
-#   endpoint_configuration {
-#     types = ["REGIONAL"]
-#   }
-# }
-
-# resource "aws_apigatewayv2_api" "txner_apigw" {
-#   name          = "Txner APIGW"
-#   protocol_type = "HTTP"
-# }
-
-# resource "aws_api_gateway_resource" "txner" {
-#   rest_api_id = aws_api_gateway_rest_api.txner_apigw.id
-#   parent_id   = aws_api_gateway_rest_api.txner_apigw.root_resource_id
-#   path_part   = "{proxy+}"
-# }
-
-# resource "aws_api_gateway_deployment" "txner_apigw_stage_dev" {
-#   depends_on = [
-#     aws_api_gateway_integration.txner_lambda_integration
-#   ]
-#   rest_api_id = aws_api_gateway_rest_api.txner_apigw.id
-#   stage_name  = "dev"
-# }
-
-# resource "aws_api_gateway_method" "get_txner_proxy_method" {
-#   rest_api_id   = aws_api_gateway_rest_api.txner_apigw.id
-#   resource_id   = aws_api_gateway_resource.txner.id
-#   http_method   = "ANY"
-#   authorization = "NONE"
-# }
-
-# resource "aws_api_gateway_method_settings" "get_txner_proxy_method_setting" {
-#   rest_api_id = aws_api_gateway_rest_api.txner_apigw.id
-#   stage_name  = aws_api_gateway_deployment.txner_apigw_stage_dev.stage_name
-#   method_path = "*/*"
-#   settings {
-#     logging_level      = "INFO"
-#     data_trace_enabled = true
-#     metrics_enabled    = true
-#   }
-# }
 resource "aws_apigatewayv2_api" "txner-api" {
   name          = "txner-api"
   protocol_type = "HTTP"
@@ -106,15 +76,6 @@ resource "aws_cloudwatch_log_group" "txner_api_gw" {
   name              = "/aws/api-gw/${aws_apigatewayv2_api.txner-api.name}"
   retention_in_days = 30
 }
-
-# resource "aws_api_gateway_integration" "txner_lambda_integration" {
-#   rest_api_id             = aws_api_gateway_rest_api.txner_apigw.id
-#   resource_id             = aws_api_gateway_resource.txner.id
-#   http_method             = aws_api_gateway_method.get_txner_proxy_method.http_method
-#   integration_http_method = "ANY"
-#   type                    = "AWS_PROXY"
-#   uri                     = aws_lambda_function.txner_lambda.invoke_arn
-# }
 
 resource "aws_apigatewayv2_route" "health_route" {
   api_id    = aws_apigatewayv2_api.txner-api.id
@@ -168,6 +129,12 @@ resource "aws_lambda_function" "txner_lambda" {
   handler          = "handler.handler"
   source_code_hash = data.archive_file.txner_lambda_zip.output_base64sha256
   role             = aws_iam_role.txner_lambda_exec.arn
+
+  environment {
+    variables = {
+      TABLE_NAME = "${aws_dynamodb_table.txner_table.name}"
+    }
+  }
 }
 
 # Cloudwatch

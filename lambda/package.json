@@ -9,9 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/aws-lambda": "^8.10.140"
-  },
-  "devDependencies": {
-    "@types/node": "^20.14.10"
+    "@aws-sdk/client-dynamodb": "^3.609.0",
+    "@aws-sdk/util-dynamodb": "^3.609.0",
+    "@types/aws-lambda": "^8.10.140",
+    "@types/node": "^20.14.10",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.5.3",
+    "uuid": "^10.0.0"
   }
 }

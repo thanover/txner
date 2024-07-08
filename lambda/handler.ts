@@ -1,19 +1,19 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { HealthCheckController } from './controllers/healthCheck';
+import { HealthRoute } from './routes/health';
+import { TransactionRoute } from './routes/transaction';
 
 export const handler: APIGatewayProxyHandler = async (event, context) => {
   console.log('EVENT: \n' + JSON.stringify(event, null, 2));
-  const responseMessage = `Unable to route method ${event.resource} at resource ${event.resource}!`
-  const statusCode = 404
-  if (event.resource === "/health") return await (new HealthCheckController(event).getResponse())
+  if (event.resource === "/health") return await (new HealthRoute(event).getResponse())
+  if (event.resource === "/transaction") return await (new TransactionRoute(event).getResponse())
 
   return {
-    statusCode,
+    statusCode: 404,
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      message: responseMessage,
+      message: `Unable to route method ${event.resource} at resource ${event.resource}!`,
     }),
   }
 };
