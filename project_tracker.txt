@@ -1,0 +1,7 @@
+Goal: Be able to upload .csv file via ts script
+to-do:
+- 
+
+
+
+done:

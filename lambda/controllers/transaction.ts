@@ -17,6 +17,7 @@ interface Transaction {
   description: string
   date: string
   amount: number
+  dateAdded: string
 }
 
 export class TransactionController {
@@ -39,7 +40,8 @@ export class TransactionController {
       PK: `DESCRIPTION#${description}`,
       SK: `DATE#${date}`,
       id: id ?? randomUUID(),
-      description, amount, date
+      description, amount, date,
+      dateAdded: Date.now().toString()
     }
 
     const transactionParams: PutItemInput = {
