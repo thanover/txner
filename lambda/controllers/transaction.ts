@@ -3,11 +3,14 @@ import { DynamoDB, PutItemInput } from '@aws-sdk/client-dynamodb'
 import { marshall } from '@aws-sdk/util-dynamodb'
 import { randomUUID } from "crypto";
 
-interface TransactionInput {
+export interface TransactionInput {
+  [index: string]: unknown
   id?: string
   description: string
   date: string
   amount: number
+  bank: string
+  cardName: string
 }
 
 interface Transaction {
@@ -18,6 +21,8 @@ interface Transaction {
   date: string
   amount: number
   dateAdded: string
+  bank: string
+  cardName: string
 }
 
 export class TransactionController {
@@ -30,7 +35,7 @@ export class TransactionController {
   async createTransaction(): Promise<APIGatewayProxyResult> {
     const { body } = this.event
     if (!body) return this.sendFail('invalid request')
-    const { id, description, amount, date } = JSON.parse(body) as TransactionInput
+    const { id, description, amount, date, bank, cardName } = JSON.parse(body) as TransactionInput
 
     const dynamoClient = new DynamoDB({
       region: 'us-east-1'
@@ -40,7 +45,7 @@ export class TransactionController {
       PK: `DESCRIPTION#${description}`,
       SK: `DATE#${date}`,
       id: id ?? randomUUID(),
-      description, amount, date,
+      description, amount, date, bank, cardName,
       dateAdded: Date.now().toString()
     }
 

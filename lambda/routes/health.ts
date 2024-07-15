@@ -15,8 +15,8 @@ export class HealthRoute {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: "Only GET method supported at resource /health" })
-
+        body:
+          JSON.stringify({ message: "Not Found" })
       }
     }
 
