@@ -1,6 +1,7 @@
 Goal: Be able to upload .csv file via ts script
 to-do:
-- 
+- be able to upload many transactions at once by creating a new path POST /transactions
+- be able to upload chase transactions
 
 
 
