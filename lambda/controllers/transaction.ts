@@ -17,10 +17,10 @@ export class TransactionController {
     const transactionInputs: TransactionInput[] = parsedBody.transactions
       ? parsedBody.transactions
       : [parsedBody];
-
+    console.log(`transactionInputs: ${JSON.stringify(transactionInputs, null, 4)}`)
     const successfulPuts: Transaction[] = [];
     const failures: string[] = [];
-    transactionInputs.map(async (transactionInput) => {
+    await Promise.all(transactionInputs.map(async (transactionInput) => {
       const { id, description, amount, date, bank, cardName } =
         transactionInput;
 
@@ -40,6 +40,8 @@ export class TransactionController {
         dateAdded: Date.now().toString(),
       };
 
+      console.log(`newTransaction: ${JSON.stringify(newTransaction, null, 4)}`)
+
       const transactionParams: PutItemInput = {
         Item: marshall(newTransaction),
         TableName: process.env.TABLE_NAME,
@@ -54,7 +56,7 @@ export class TransactionController {
         );
         console.log(err);
       }
-    });
+    }))
 
     return {
       statusCode: 200,

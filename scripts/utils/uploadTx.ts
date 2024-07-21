@@ -1,4 +1,4 @@
-import { Transaction, TransactionInput } from "../../types/Transaction";
+import { Transaction, TransactionInput } from "../types/Transaction";
 import axios, { AxiosInstance } from "axios";
 
 export type TxnerApiEnvs = "Dev" | "Prod";
@@ -25,12 +25,24 @@ export class TxnerApi {
 
   async createTx(tx: TransactionInput) {
     const response = await this.axiosInstance.post("/transaction", tx);
-    if (response.status === 201) {
+    if (response.status < 299) {
       return response.data as unknown as Transaction;
     }
-    if (response.status !== 201) {
+    if (response.status > 299) {
       console.log(`Problem creating Transaction: ${JSON.stringify(tx)}`);
       console.log(`Response recieved: ${JSON.stringify(response)}`);
     }
+  }
+
+  async createManyTx(txs: TransactionInput[]){
+    const response = await this.axiosInstance.post("/transaction", {transactions: txs});
+    if (response.status < 299) {
+      return response.data;
+    }
+    if (response.status > 299) {
+      console.log(`Problem creating Many Transactions: ${JSON.stringify(txs)}`);
+      console.log(`Response recieved: ${JSON.stringify(response)}`);
+    }
+
   }
 }

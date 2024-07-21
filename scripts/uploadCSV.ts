@@ -1,4 +1,4 @@
-import { getTransactionRecordsFromCSVRecords } from "../csvFileMappings/csvFileMappings";
+import { getTransactionRecordsFromCSVRecords } from "./csvFileMappings/csvFileMappings";
 import { loadCSV } from "./utils/loadCSVFile";
 import { TxnerApi } from "./utils/uploadTx";
 
@@ -16,13 +16,8 @@ export async function uploadCSV(path: string, cardName: string, bank: string) {
   );
   console.log(`${transactionsFromCsv.length} transactions found in csv file`);
   const txnerApiClient = new TxnerApi({ env: "Dev" });
-  await txnerApiClient.createTx(transactionsFromCsv[0]);
-  // await Promise.all(
-  //   transactionsFromCsv.map(async (record) => {
-  //     const newTx = await txnerApiClient.createTx(record);
-  //     console.log(`Transaction Created!: ${JSON.stringify(newTx)}`);
-  //   })
-  // );
-  console.log(transactionsFromCsv);
+  const newTx = await txnerApiClient.createManyTx(transactionsFromCsv);
+  
+  console.log(JSON.stringify(newTx, null, 2));
   return true;
 }

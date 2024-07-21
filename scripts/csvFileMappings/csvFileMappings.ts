@@ -1,5 +1,5 @@
 import { chaseMapping } from "./chaseMapping";
-import { TransactionInput } from "../lambda/controllers/transaction";
+import { TransactionInput } from "../types/Transaction";
 
 export async function getTransactionRecordsFromCSVRecords(
   csvData: unknown[],
