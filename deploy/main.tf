@@ -129,6 +129,8 @@ resource "aws_lambda_function" "txner_lambda" {
   handler          = "handler.handler"
   source_code_hash = data.archive_file.txner_lambda_zip.output_base64sha256
   role             = aws_iam_role.txner_lambda_exec.arn
+  timeout          = 10
+  memory_size      = 512
 
   environment {
     variables = {
